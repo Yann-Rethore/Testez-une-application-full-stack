@@ -117,8 +117,7 @@ Le rapport de couverture se trouve dans le dossier :
 
 ### Couverture Back-end
 
-Modifier le fichier properties , en effet les tests emploient une autre base (H2) qui nécessite que des information de 
-L'appliaction.properties du back soient commentées :
+Modifier le fichier properties , en effet les tests emploient une autre base (H2) qui nécessite que des informations de l'application.properties du back soient commentées :
 ```sh
 server.port=8080
 spring.profiles.active=test
