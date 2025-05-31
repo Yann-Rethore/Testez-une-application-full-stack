@@ -54,23 +54,7 @@ mvn install
 Dans le terminal :
 ```sh
 npx jest --coverage
-```
-Si besoin, configurer **jest** :
-```json
-moduleNameMapper: {
-  "^src/(.*)$": "<rootDir>/src/$1"
-}
-```
-Et **tsconfig.json** :
-```json
-{
-  "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "src/*": ["src/*"]
-    }
-  }
-}
+...
 ```
 📂 **Rapport de couverture** :  
 `Testez-une-application-full-stack/front/coverage/jest/lcov-report/index.html`
