@@ -91,7 +91,6 @@ Vous pourrez y enregistrer d'autres utilisiateurs , créer ect.
 Dans le terminal de votre IDE:
 ```sh
 npx jest --coverage
-...
 ```
 📂 **Rapport de couverture** :  
 Le rapport de couverture se trouve dans le dossier:
@@ -108,6 +107,7 @@ npx cypress open
 1. Ouvrir **E2E Testing**.
 2. Choisir **Electron** et **Start Testing**.
 3. Exécuter la spécification **testE2E**.
+---
 📂 **Rapport E2E** :
 
 Le rapport de couverture se trouve dans le dossier :
