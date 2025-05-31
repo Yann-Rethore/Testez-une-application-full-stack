@@ -40,11 +40,60 @@ describe('The Home Page', () => {
   // Vérifie la page de login
   cy.url().should('include', '/login')
   cy.get('input[formcontrolname="email"]').type('email@test.com')
+  cy.get('input[formcontrolname="password"]').should('have.attr', 'type', 'password').type('test!1234')
+  cy.get('button[aria-label="Hide password"]').click()
+  cy.get('input[formcontrolname="password"]').should('have.attr', 'type', 'text')
+  cy.get('button[aria-label="Hide password"]').click()
+  cy.get('input[formcontrolname="password"]').should('have.attr', 'type', 'password')
+  cy.get('input[formcontrolname="password"]').clear
+  cy.get('input[formcontrolname="password"]').type('test!1234');
+
+  // Vérifie le logout
+  cy.get('span.link').contains('Logout').click();
+  cy.url().should('include', '/'); // adapte selon ta route de login
+  
+  
+  // Vérifie une erreur sur la page de register
+  cy.get('span.link[routerlink="register"]').click();
+  cy.get('input[formcontrolname="firstName"]').type('Test')
+  cy.get('input[formcontrolname="lastName"]').type('Test')
+  cy.get('input[formcontrolname="email"]').type('email@test.com')
+  cy.get('input[formcontrolname="password"]').type('test!1234')
+  cy.get('button[type=submit]').click()
+  cy.get('span.error').should('be.visible').and('contain.text', 'An error occurred');
+  cy.get('span.link[routerlink="login"]').click();
+
+  // puis relog avec erreur 
+  cy.url().should('include', '/login')
+  cy.get('input[formcontrolname="email"]').type('email@fakeTest.com')
+  cy.get('input[formcontrolname="password"]').should('have.attr', 'type', 'password').type('test!1234')
+  cy.get('button[type=submit]').click()
+  cy.get('p.error').should('contain.text', 'An error occurred')
+
+  // relog avec les bons identifiants
+  cy.get('input[formcontrolname="email"]').clear()
+  cy.get('input[formcontrolname="email"]').type('email@test.com')
+  cy.get('input[formcontrolname="password"]').clear()
   cy.get('input[formcontrolname="password"]').type('test!1234')
   cy.get('button[type=submit]').click()
 
+  //tente a une page interdite
+  cy.url().should('include', '/sessions') 
+  cy.visit('/sessions/create');
+  cy.url().should('include', '/login'); 
+  
+
+  
+
+  // puis relog 
+  cy.get('input[formcontrolname="email"]').type('email@test.com')
+  cy.get('input[formcontrolname="password"]').should('have.attr', 'type', 'password').type('test!1234')
+  cy.get('button[type=submit]').click()
+  
+
 
   // vérifie la page sessions
+  
   cy.url().should('include', '/sessions')
   cy.contains('Yoga app')
   cy.contains('Rentals available')
@@ -65,7 +114,7 @@ describe('The Home Page', () => {
   // Vérifie la page de détail de la session
   cy.url().should('include', '/detail')
   cy.get('H1').should('contain.text','Test Main Session');
-  cy.get('span.ml1').contains('Margot DELAHAYE').should('be.visible');
+  cy.contains('Margot DELAHAYE').should('be.visible');
   cy.get('button[mat-icon-button]').find('mat-icon').should('contain.text', 'arrow_back');
   cy.get('img.picture[alt="Yoga session"][src="assets/sessions.png"]').should('be.visible')
   cy.get('button[mat-raised-button][color="primary"]').contains('Participate').should('be.visible');
@@ -157,6 +206,11 @@ describe('The Home Page', () => {
     cy.get('span.link[routerlink="register"]').should('be.visible').and('contain.text', 'Register')
     cy.visit('/sessions/detail/1') // Essaye d'accéder à une page protégée sans être connecté
     cy.url().should('include', '/login') // Vérifie que l'utilisateur est redirigé vers la page de login
+    cy.get('input[formcontrolname="email"]').type('yoga@studio.com')
+    cy.get('input[formcontrolname="password"]').type('test!1234')
+    cy.get('button[type=submit]').click()
+    cy.url().should('include', '/sessions') // Vérifie que l'utilisateur est redirigé vers la page des sessions
+    cy.visit('/register') // Essaye d'acceder à une page qui ne devrait plus etre accessible
   })
 
     it('Create and verifiy Admin routes', () => {

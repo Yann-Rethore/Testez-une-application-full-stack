@@ -127,4 +127,48 @@ class AuthControllerTest {
 
         assertEquals("Invalid credentials", exception.getMessage());
     }
+
+    @Test
+    void authenticateUser_shouldSetIsAdminTrueIfUserIsAdmin() {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("admin@email.com");
+        loginRequest.setPassword("password");
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(2L, "admin@email.com", "Admin", "User", true, "password");
+
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        when(jwtUtils.generateJwtToken(authentication)).thenReturn("admin-jwt");
+        // Simule un utilisateur admin
+        when(userRepository.findByEmail("admin@email.com")).thenReturn(Optional.of(
+                new User("admin@email.com", "User", "Admin", "password", true)
+        ));
+
+        ResponseEntity<?> response = authController.authenticateUser(loginRequest);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertInstanceOf(JwtResponse.class, response.getBody());
+        JwtResponse jwtResponse = (JwtResponse) response.getBody();
+        assertTrue(jwtResponse.getAdmin());
+    }
+
+    @Test
+    void authenticateUser_shouldSetIsAdminFalseIfUserNotFound() {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("notfound@email.com");
+        loginRequest.setPassword("password");
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(3L, "notfound@email.com", "No", "User", false, "password");
+
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        when(jwtUtils.generateJwtToken(authentication)).thenReturn("jwt-token");
+        when(userRepository.findByEmail("notfound@email.com")).thenReturn(Optional.empty());
+
+        ResponseEntity<?> response = authController.authenticateUser(loginRequest);
+
+        assertEquals(200, response.getStatusCodeValue());
+        JwtResponse jwtResponse = (JwtResponse) response.getBody();
+        assertFalse(jwtResponse.getAdmin());
+    }
 }
