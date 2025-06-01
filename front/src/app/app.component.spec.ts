@@ -67,5 +67,48 @@ it('should call logOut and navigate to root on logout', () => {
     expect(sessionServiceMock.logOut).toHaveBeenCalled();
     expect(navigateSpy).toHaveBeenCalledWith(['']);
   });
+  });
 
+// Tests d'intégration avec le vrai service
+describe('AppComponent (integration with real SessionService)', () => {
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+  let sessionService: SessionService;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientModule, MatToolbarModule],
+      declarations: [AppComponent],
+      providers: [SessionService]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    sessionService = TestBed.inject(SessionService);
+  });
+
+it('should react to login and logout (integration)', () => {
+    fixture.detectChanges();
+    let isLogged: boolean | undefined;
+    component.$isLogged().subscribe(val => isLogged = val);
+    expect(isLogged).toBe(false);
+
+    sessionService.logIn({
+      id: 1,
+      admin: true,
+      token: 'fake-token',
+      type: 'user',
+      username: 'user1',
+      firstName: 'User',
+      lastName: 'One'
+    });
+    fixture.detectChanges();
+    component.$isLogged().subscribe(val => isLogged = val);
+    expect(isLogged).toBe(true);
+
+    sessionService.logOut();
+    fixture.detectChanges();
+    component.$isLogged().subscribe(val => isLogged = val);
+    expect(isLogged).toBe(false);
+  });
 });

@@ -1,11 +1,8 @@
 const { defineConfig } = require('cypress')
 
 module.exports = defineConfig({
-  moduleNameMapper: {
-  // Uncomment and adjust the following lines if you have specific module paths to map
-   // '@core/(.*)': '<rootDir>/src/app/core/$1'
-   '^src/(.*)$': '<rootDir>/src/$1'
- 
+   moduleNameMapper: {
+    '^src/(.*)$': '<rootDir>/src/$1'
   },
   preset: 'jest-preset-angular',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],

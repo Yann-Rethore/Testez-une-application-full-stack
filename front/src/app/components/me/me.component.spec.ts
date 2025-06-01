@@ -1,4 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -100,8 +101,57 @@ let component: MeComponent;
   });
 });
 
+// -------------------- TESTS D'INTEGRATION --------------------
+describe('MeComponent (integration)', () => {
+  let component: MeComponent;
+  let fixture: ComponentFixture<MeComponent>;
+  let httpMock: HttpTestingController;
+  let mockRouter: { navigate: jest.Mock };
 
+  beforeEach(async () => {
+    mockRouter = { navigate: jest.fn() };
 
+    await TestBed.configureTestingModule({
+      declarations: [MeComponent],
+      imports: [
+        MatSnackBarModule,
+        HttpClientTestingModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule
+      ],
+      providers: [
+        SessionService,
+        UserService,
+        { provide: Router, useValue: mockRouter }
+      ],
+    }).compileComponents();
 
+    fixture = TestBed.createComponent(MeComponent);
+    component = fixture.componentInstance;
+    httpMock = TestBed.inject(HttpTestingController);
+
+// Simule une session utilisateur
+    const sessionService = TestBed.inject(SessionService);
+    sessionService.sessionInformation = {
+  id: 1,
+  token: 'fake-token',
+  type: 'user',
+  username: 'testuser',
+  firstName: 'Test',
+  lastName: 'User',
+  admin: true
+};
+  });
+
+  it('should fetch user from API on init', () => {
+    component.ngOnInit();
+    const req = httpMock.expectOne(req => req.url.includes('/user/1'));
+    expect(req.request.method).toBe('GET');
+    req.flush({ id: 1, username: 'test' });
+    expect(component.user).toEqual({ id: 1, username: 'test' });
+  });
+});
 
 
