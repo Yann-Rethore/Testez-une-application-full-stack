@@ -1,12 +1,12 @@
-import { defineConfig } from "cypress";
+// cypress.config.ts
+import { defineConfig } from 'cypress';
 
 export default defineConfig({
   e2e: {
-    baseUrl: "http://localhost:4200",
+    baseUrl: 'http://localhost:4200', // <-- Ajoute cette ligne
     setupNodeEvents(on, config) {
-      require("@cypress/code-coverage/task")(on, config);
+      require('@cypress/code-coverage/task')(on, config);
       return config;
     },
-    supportFile: "cypress/support/e2e.ts"
-  }
+  },
 });
