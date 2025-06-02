@@ -102,6 +102,7 @@ Le rapport de couverture se trouve dans le dossier:
 #### Exécuter Cypress :
 A partir de L'IDE de votre front :
 ```sh
+ng run yoga:serve-coverage
 npx cypress open
 ```
 1. Ouvrir **E2E Testing**.
