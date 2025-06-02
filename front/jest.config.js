@@ -1,5 +1,3 @@
-const { defineConfig } = require('cypress')
-
 module.exports = defineConfig({
    moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/src/$1'
@@ -16,11 +14,6 @@ module.exports = defineConfig({
     global: {
       statements: 80
     },
-    e2e: {
-    setupNodeEvents(on, config) {
-      require('@cypress/code-coverage/task')(on, config)
-      return config
-    },
   },
   roots: [
     "<rootDir>"
@@ -32,4 +25,4 @@ module.exports = defineConfig({
     "node_modules"
   ],
 }
-});
+);
